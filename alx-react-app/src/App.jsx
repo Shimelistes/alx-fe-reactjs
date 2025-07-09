@@ -21,7 +21,7 @@ function App() {
       {/* the inserted WelcomeMessage component
       N.b div is optional */}
 
-        ["<WelcomeMessage/>"]
+        <WelcomeMessage />
 
       <h1>Vite + React</h1>
       <div className="card">
