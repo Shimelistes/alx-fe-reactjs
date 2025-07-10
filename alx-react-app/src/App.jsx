@@ -25,7 +25,7 @@ function App() {
       N.b div is optional */}
 
         <WelcomeMessage />
-        <header />
+        <Header />
         <MainContent />
         <Footer />
         
