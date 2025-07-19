@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import UserContext from '../UserContext'; // ✅ Correct relative path
+import UserContext from './UserContext'; // ✅ Correct relative path
 
 function UserDetails() {
   const userData = useContext(UserContext);
