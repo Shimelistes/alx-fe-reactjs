@@ -4,7 +4,7 @@ import Footer from './components/Footer'
 import WelcomeMessage from './components/WelcomeMessage'
 
 import UserProfile from './components/UserProfile'
-import { useState } from 'react'
+// import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -15,8 +15,8 @@ import UserContext from './UserContext';
 
 function App() {
 
-  const userData = { name:"Shimelis Teshome" , age:30, email: "shimelisteshomework@gmail.com"}
-  const [count, setCount] = useState(0)
+  const userData = {name: "Jane Doe", email: "jane.doe@example.com"}
+  // const [count, setCount] = useState(0)
   return (
     <>
     <UserContext.Provider value={userData}>
@@ -33,7 +33,7 @@ function App() {
 
       {/* the inserted WelcomeMessage component
       N.b div is optional */}
-      <div>
+      {/* <div>
 
          <UserProfile 
          name="Alice" 
@@ -46,11 +46,9 @@ function App() {
         <Footer />
         
 
-      </div>
-        
-      
+      </div> */}
 
-      <h1>Vite + React</h1>
+      {/* <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
@@ -61,7 +59,7 @@ function App() {
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
-      </p>
+      </p> */}
     </>
   )
 }
