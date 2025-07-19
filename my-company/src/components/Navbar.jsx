@@ -1,14 +1,47 @@
 import { Link } from 'react-router-dom';
 
+
 function Navbar() {
   return (
-    <nav style={{ padding: '10px', backgroundColor: '#333', color: '#fff' }}>
-      <Link to="/" style={{ margin: '10px', color: '#fff' }}>Home</Link>
-      <Link to="/about" style={{ margin: '10px', color: '#fff' }}>About</Link>
-      <Link to="/services" style={{ margin: '10px', color: '#fff' }}>Services</Link>
-      <Link to="/contact" style={{ margin: '10px', color: '#fff' }}>Contact</Link>
+    <nav style={styles.navbar}>
+      <div style={styles.logo}>My Company</div>
+      <ul style={styles.navList}>
+        <li><Link to="/" style={styles.link}>Home</Link></li>
+        <li><Link to="/about" style={styles.link}>About</Link></li>
+        <li><Link to="/services" style={styles.link}>Services</Link></li>
+        <li><Link to="/contact" style={styles.link}>Contact</Link></li>
+      </ul>
     </nav>
   );
 }
+
+const styles = {
+  navbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#333',
+    padding: '10px 20px',
+  },
+  logo: {
+    color: '#fff',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+  },
+  navList: {
+    listStyle: 'none',
+    display: 'flex',
+    margin: 0,
+    padding: 0,
+  },
+  link: {
+    color: '#fff',
+    textDecoration: 'none',
+    marginLeft: '20px',
+    fontSize: '1rem',
+  },
+};
+
+
 
 export default Navbar;
