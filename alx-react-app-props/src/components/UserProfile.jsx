@@ -1,11 +1,11 @@
-const UserProfile = (props) => {
-  return (
-    <div>
-      <h2>{props.name}</h2>
-      <p>Age:  {props.age}</p>
-      <p>Bio:  {props.bio}</p>
-    </div>
-  );
-};
+// function UserProfile() {
+//   const userData = useContext(UserContext);
 
-export default UserProfile;
+//   return (
+//     <div className="user-profile">
+//       <h2>User Profile</h2>
+//       <p><strong>Name:</strong> {userData.name}</p>
+//       <p><strong>Email:</strong> {userData.email}</p>
+//     </div>
+//   );
+// }
