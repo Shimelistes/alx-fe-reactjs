@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import useRecipeStore from './recipeStore';
 import SearchBar from './components/SearchBar';
 import RecipeList from './components/RecipeList';
-import RecipeDetail from './components/RecipeDetail'; // You'll create this next
+import RecipeDetail from './components/RecipeDetail';
+import AddRecipeform from './components/AddRecipeForm'; 
 
 function App() {
   const setRecipes = useRecipeStore(state => state.setRecipes);
