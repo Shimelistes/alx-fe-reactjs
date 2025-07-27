@@ -1,25 +1,27 @@
-// App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// src/App.jsx
+import React, { useEffect } from 'react';
+import useRecipeStore from './recipeStore';
+import SearchBar from './components/SearchBar';
 import RecipeList from './components/RecipeList';
-import RecipeDetails from './components/RecipeDetails';
-import AddRecipeForm from './components/AddRecipeForm';
 
 function App() {
+  const setRecipes = useRecipeStore(state => state.setRecipes);
+
+  useEffect(() => {
+    // Example recipes
+    const initialRecipes = [
+      { title: 'Pasta', description: 'Delicious pasta recipe.' },
+      { title: 'Salad', description: 'Fresh and healthy.' }
+    ];
+    setRecipes(initialRecipes);
+  }, [setRecipes]);
+
   return (
-    <Router>
-      <div className="app">
-        <header>
-          <h1>Recipe Sharing App</h1>
-        </header>
-        <main>
-          <Routes>
-            <Route path="/" element={<RecipeList />} />
-            <Route path="/recipes/:recipeId" element={<RecipeDetails />} />
-            <Route path="/add" element={<AddRecipeForm />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <div className="App">
+      <h1>Recipe Sharing App</h1>
+      <SearchBar />
+      <RecipeList />
+    </div>
   );
 }
 
