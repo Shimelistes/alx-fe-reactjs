@@ -18,7 +18,7 @@ const EditRecipeForm = ({ recipe }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // This prevents the default form submission behavior
     const updatedRecipe = {
       title: formData.title,
       description: formData.description,
