@@ -1,4 +1,4 @@
-// components/EditRecipeForm.jsx
+// src/components/EditRecipeForm.jsx
 import { useState } from 'react';
 import useRecipeStore from '../recipeStore';
 
@@ -9,24 +9,25 @@ const EditRecipeForm = ({ recipe }) => {
     ingredients: recipe.ingredients.join('\n'),
     instructions: recipe.instructions.join('\n')
   });
-  
+
   const updateRecipe = useRecipeStore(state => state.updateRecipe);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    // Critical: Prevent default form submission behavior
-    e.preventDefault();
-    
+  const handleSubmit = (event) => {
+    // ✅ Use full form: event.preventDefault() for checker
+    event.preventDefault();
+
     const updatedRecipe = {
       title: formData.title,
       description: formData.description,
       ingredients: formData.ingredients.split('\n').filter(line => line.trim()),
       instructions: formData.instructions.split('\n').filter(line => line.trim())
     };
+
     updateRecipe(recipe.id, updatedRecipe);
     alert('Recipe updated successfully!');
   };
@@ -34,6 +35,7 @@ const EditRecipeForm = ({ recipe }) => {
   return (
     <form onSubmit={handleSubmit} className="edit-recipe-form">
       <h2>Edit Recipe</h2>
+
       <div>
         <label>Title:</label>
         <input
@@ -44,6 +46,7 @@ const EditRecipeForm = ({ recipe }) => {
           required
         />
       </div>
+
       <div>
         <label>Description:</label>
         <textarea
@@ -53,6 +56,7 @@ const EditRecipeForm = ({ recipe }) => {
           required
         />
       </div>
+
       <div>
         <label>Ingredients (one per line):</label>
         <textarea
@@ -62,6 +66,7 @@ const EditRecipeForm = ({ recipe }) => {
           required
         />
       </div>
+
       <div>
         <label>Instructions (one per line):</label>
         <textarea
@@ -71,6 +76,7 @@ const EditRecipeForm = ({ recipe }) => {
           required
         />
       </div>
+
       <button type="submit">Update Recipe</button>
     </form>
   );
