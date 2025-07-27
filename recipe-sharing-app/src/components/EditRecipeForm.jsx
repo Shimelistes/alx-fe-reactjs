@@ -1,62 +1,75 @@
+// components/EditRecipeForm.jsx
 import { useState } from 'react';
-import useRecipeStore from '../store/recipeStore';
-import { useNavigate } from 'react-router-dom';
+import useRecipeStore from '../recipeStore';
 
 const EditRecipeForm = ({ recipe }) => {
-  const [title, setTitle] = useState(recipe.title);
-  const [description, setDescription] = useState(recipe.description);
-  const updateRecipe = useRecipeStore((state) => state.updateRecipe);
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    title: recipe.title,
+    description: recipe.description,
+    ingredients: recipe.ingredients.join('\n'),
+    instructions: recipe.instructions.join('\n')
+  });
+  
+  const updateRecipe = useRecipeStore(state => state.updateRecipe);
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // This prevents the default form submission behavior
-    
-    if (!title.trim() || !description.trim()) {
-      alert('Please fill in all fields');
-      return;
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-    updateRecipe(recipe.id, { 
-      title: title.trim(), 
-      description: description.trim() 
-    });
-    navigate(`/recipe/${recipe.id}`);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const updatedRecipe = {
+      title: formData.title,
+      description: formData.description,
+      ingredients: formData.ingredients.split('\n').filter(line => line.trim()),
+      instructions: formData.instructions.split('\n').filter(line => line.trim())
+    };
+    updateRecipe(recipe.id, updatedRecipe);
+    alert('Recipe updated successfully!');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: '10px' }}>
+    <form onSubmit={handleSubmit} className="edit-recipe-form">
+      <h2>Edit Recipe</h2>
+      <div>
+        <label>Title:</label>
         <input
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Recipe title"
-          style={{ padding: '8px', width: '100%' }}
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
           required
         />
       </div>
-      <div style={{ marginBottom: '10px' }}>
+      <div>
+        <label>Description:</label>
         <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Recipe description"
-          style={{ padding: '8px', width: '100%', minHeight: '100px' }}
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
           required
         />
       </div>
-      <button
-        type="submit"
-        style={{
-          padding: '8px 16px',
-          backgroundColor: '#4CAF50',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        Update Recipe
-      </button>
+      <div>
+        <label>Ingredients (one per line):</label>
+        <textarea
+          name="ingredients"
+          value={formData.ingredients}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div>
+        <label>Instructions (one per line):</label>
+        <textarea
+          name="instructions"
+          value={formData.instructions}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <button type="submit">Update Recipe</button>
     </form>
   );
 };
