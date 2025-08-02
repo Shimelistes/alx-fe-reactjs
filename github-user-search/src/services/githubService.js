@@ -1,17 +1,24 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://api.github.com/users';
+const API_BASE_URL = 'https://api.github.com';
 
-const fetchUserData = async (username) => {
+// Use GitHub Search API: https://api.github.com/search/users?q={query}&page=1&per_page=30
+const searchUsers = async (query, page = 1) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/${username}`);
+    const response = await axios.get(`${API_BASE_URL}/search/users`, {
+      params: {
+        q: query,
+        page,
+        per_page: 30,
+      },
+    });
     return response.data;
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      throw new Error('User not found');
+  } catch (err) {
+    if (err.response?.status === 403) {
+      throw new Error('GitHub API rate limit exceeded. Try again later.');
     }
-    throw error;
+    throw err;
   }
 };
 
-export default { fetchUserData };
+export default { searchUsers };
