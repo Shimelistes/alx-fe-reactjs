@@ -1,20 +1,15 @@
-// src/App.jsx
+import React from 'react';
+import Search from './components/Search.jsx';
+
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow">
-        <div className="max-w-4xl mx-auto py-6 px-4">
-          <h1 className="text-2xl font-bold text-center text-gray-800">
-            GitHub User Search
-          </h1>
-        </div>
-      </header>
-
-      <main className="max-w-4xl mx-auto p-4">
-        <p className="text-center text-gray-600">
-          Start searching for GitHub users...
-        </p>
-      </main>
+    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
+      <div className="max-w-lg w-full bg-gray-800 p-8 rounded-xl shadow-lg">
+        <h1 className="text-3xl font-bold text-center mb-6 text-indigo-400">
+          GitHub User Search
+        </h1>
+        <Search />
+      </div>
     </div>
   );
 }
