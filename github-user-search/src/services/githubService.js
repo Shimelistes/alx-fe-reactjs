@@ -4,6 +4,26 @@ import axios from 'axios';
 
 const BASE_URL = 'https://api.github.com/search/users?q';
 
+// Basic user fetch (single user)
+export const fetchUserData = async (username) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/users/${username}`);
+    return response.data;
+  } catch (error) {
+    if (error.response?.status === 404) {
+      throw new Error('User not found');
+    }
+    throw error;
+  }
+};
+
+// Advanced search (multiple users)
+export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
+  // ... keep your existing searchUsers implementation ...
+};
+
+
+
 /**
  * Search GitHub users with advanced filters
  * @param {Object} params - Search parameters
@@ -16,8 +36,6 @@ const BASE_URL = 'https://api.github.com/search/users?q';
  * @param {number} [perPage=10] - Results per page
  * @returns {Promise<Object>} Search results
  */
-export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
-  try {
     // Construct query string with all parameters
     const queryParts = [];
     
@@ -69,7 +87,7 @@ export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
       hasMore: (page * perPage) < response.data.total_count
     };
 
-  } catch (error) {
+   catch (error) {
     console.error('GitHub API error:', error);
     
     if (error.response) {
@@ -86,4 +104,5 @@ export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
     }
     throw error;
   }
-};
+
+;
