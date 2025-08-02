@@ -3,54 +3,108 @@ import axios from 'axios';
 
 const BASE_URL = 'https://api.github.com';
 
-export const searchUsers = async (params, page = 1, perPage = 10) => {
+/**
+ * Search GitHub users with advanced filters
+ * @param {Object} params - Search parameters
+ * @param {string} [params.username] - Username or part of username
+ * @param {string} [params.location] - User location
+ * @param {number} [params.minRepos] - Minimum number of repositories
+ * @param {number} [params.minFollowers] - Minimum number of followers
+ * @param {string} [params.language] - Primary programming language
+ * @param {number} [page=1] - Page number for pagination
+ * @param {number} [perPage=10] - Results per page
+ * @returns {Promise<Object>} Search results
+ */
+export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
   try {
-    // Construct query string based on provided parameters
-    let query = '';
+    // Construct query parameters
+    const queryParts = [];
     
-    if (params.username) query += `${params.username} in:login`;
-    if (params.location) query += ` location:${params.location}`;
-    if (params.reposMin) query += ` repos:>=${params.reposMin}`;
-    if (params.followersMin) query += ` followers:>=${params.followersMin}`;
-    if (params.language) query += ` language:${params.language}`;
+    if (params.username) queryParts.push(`${params.username} in:login`);
+    if (params.location) queryParts.push(`location:${params.location}`);
+    if (params.minRepos) queryParts.push(`repos:>=${params.minRepos}`);
+    if (params.minFollowers) queryParts.push(`followers:>=${params.minFollowers}`);
+    if (params.language) queryParts.push(`language:${params.language}`);
 
-    // Remove any leading/trailing whitespace
-    query = query.trim();
-
-    if (!query) {
+    const query = queryParts.join(' ');
+    
+    if (!query.trim()) {
       throw new Error('Please provide at least one search criteria');
     }
 
+    // Make the API request
     const response = await axios.get(`${BASE_URL}/search/users`, {
       params: {
         q: query,
         page,
-        per_page: perPage
+        per_page: perPage,
+        sort: params.sort || 'joined',
+        order: params.order || 'desc'
+      },
+      headers: {
+        'Accept': 'application/vnd.github.v3+json'
       }
     });
 
-    // Fetch additional details for each user (since search API returns limited data)
+    // Get detailed information for each user
     const usersWithDetails = await Promise.all(
-      response.data.items.map(user => 
-        axios.get(`${BASE_URL}/users/${user.login}`)
-          .then(res => res.data)
-          .catch(() => user) // Fallback to basic data if detailed fetch fails
-      )
+      response.data.items.map(async (user) => {
+        try {
+          const userResponse = await axios.get(`${BASE_URL}/users/${user.login}`);
+          return userResponse.data;
+        } catch (error) {
+          console.error(`Failed to fetch details for user ${user.login}:`, error);
+          return user; // Return basic info if detailed fetch fails
+        }
+      })
     );
 
     return {
-      ...response.data,
-      items: usersWithDetails
+      total_count: response.data.total_count,
+      incomplete_results: response.data.incomplete_results,
+      items: usersWithDetails,
+      hasMore: (page * perPage) < response.data.total_count
     };
+
   } catch (error) {
+    console.error('GitHub API error:', error);
+    
     if (error.response) {
-      if (error.response.status === 403) {
-        throw new Error('API rate limit exceeded. Please try again later.');
-      }
-      if (error.response.status === 422) {
-        throw new Error('Invalid search parameters. Please adjust your search.');
+      switch (error.response.status) {
+        case 403:
+          throw new Error('API rate limit exceeded. Please try again later.');
+        case 422:
+          throw new Error('Invalid search parameters. Please adjust your search.');
+        case 503:
+          throw new Error('GitHub service unavailable. Please try again later.');
+        default:
+          throw new Error(`GitHub API error: ${error.response.data.message}`);
       }
     }
+    throw error;
+  }
+};
+
+/**
+ * Get user repositories
+ * @param {string} username - GitHub username
+ * @param {Object} [params] - Additional parameters
+ * @param {string} [params.sort] - Sort field (created, updated, pushed, full_name)
+ * @param {string} [params.direction] - Sort direction (asc or desc)
+ * @returns {Promise<Array>} List of repositories
+ */
+export const getUserRepos = async (username, params = {}) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/users/${username}/repos`, {
+      params: {
+        sort: params.sort || 'updated',
+        direction: params.direction || 'desc',
+        per_page: params.perPage || 100
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch repositories for ${username}:`, error);
     throw error;
   }
 };
