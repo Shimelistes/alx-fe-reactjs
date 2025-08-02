@@ -7,9 +7,9 @@ const Search = () => {
   const [searchParams, setSearchParams] = useState({
     username: '',
     location: '',
-    reposMin: '',
+    minRepos: '',
     language: '',
-    followersMin: ''
+    minFollowers: ''
   });
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,14 +24,12 @@ const Search = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       if (searchType === 'basic' && searchParams.username) {
-        // Basic search using fetchUserData
         const user = await fetchUserData(searchParams.username);
         setUsers([user]);
       } else if (searchType === 'advanced') {
-        // Advanced search using searchUsers
         const data = await searchUsers(searchParams);
         setUsers(data.items);
       }
@@ -50,16 +48,16 @@ const Search = () => {
       </h1>
 
       {/* Search type toggle */}
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-6 space-x-4">
         <button
           onClick={() => setSearchType('basic')}
-          className={`px-4 py-2 ${searchType === 'basic' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          className={`px-4 py-2 rounded-md ${searchType === 'basic' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
         >
           Basic Search
         </button>
         <button
           onClick={() => setSearchType('advanced')}
-          className={`px-4 py-2 ${searchType === 'advanced' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+          className={`px-4 py-2 rounded-md ${searchType === 'advanced' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
         >
           Advanced Search
         </button>
@@ -85,22 +83,61 @@ const Search = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            {/* Advanced search fields */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                Username
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
               <input
                 type="text"
-                id="username"
                 name="username"
                 value={searchParams.username}
                 onChange={handleInputChange}
-                placeholder="e.g. octocat"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g. dev"
+                className="w-full px-3 py-2 border rounded-md"
               />
             </div>
-            {/* Other advanced fields... */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <input
+                type="text"
+                name="location"
+                value={searchParams.location}
+                onChange={handleInputChange}
+                placeholder="e.g. Ethiopia"
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Repos</label>
+              <input
+                type="number"
+                name="minRepos"
+                value={searchParams.minRepos}
+                onChange={handleInputChange}
+                placeholder="e.g. 10"
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Followers</label>
+              <input
+                type="number"
+                name="minFollowers"
+                value={searchParams.minFollowers}
+                onChange={handleInputChange}
+                placeholder="e.g. 100"
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
+              <input
+                type="text"
+                name="language"
+                value={searchParams.language}
+                onChange={handleInputChange}
+                placeholder="e.g. JavaScript"
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
           </div>
         )}
 
@@ -113,8 +150,60 @@ const Search = () => {
         </button>
       </form>
 
-      {/* Results display */}
-      {/* ... keep your existing results display code ... */}
+      {users.length > 0 && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {users.map((user) => (
+      <div key={user.id} className="border p-4 rounded-md shadow">
+        <div className="flex items-center space-x-4">
+          <img src={user.avatar_url} alt={user.login} className="w-16 h-16 rounded-full" />
+          <div>
+            <h2 className="text-lg font-semibold">{user.name || user.login}</h2>
+            <p className="text-sm text-gray-600">{user.location || 'Location unknown'}</p>
+            <a
+              href={user.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline text-sm"
+            >
+              View Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+
+      {/* Error */}
+      {error && (
+        <div className="text-red-600 text-center mb-4">{error}</div>
+      )}
+
+      {/* Search Results */}
+      {users.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {users.map((user) => (
+            <div key={user.id} className="border p-4 rounded-md shadow">
+              <div className="flex items-center space-x-4">
+                <img src={user.avatar_url} alt={user.login} className="w-16 h-16 rounded-full" />
+                <div>
+                  <h2 className="text-lg font-semibold">{user.name || user.login}</h2>
+                  <p className="text-sm text-gray-600">{user.location || 'Location unknown'}</p>
+                  <a
+                    href={user.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline text-sm"
+                  >
+                    View Profile
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
