@@ -17,22 +17,22 @@ const BASE_URL = 'https://api.github.com';
  */
 export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
   try {
-    // Construct query parameters
+    // Construct query string with all parameters
     const queryParts = [];
     
     if (params.username) queryParts.push(`${params.username} in:login`);
-    if (params.location) queryParts.push(`location:${params.location}`);
+    if (params.location) queryParts.push(`location:"${params.location}"`);
     if (params.minRepos) queryParts.push(`repos:>=${params.minRepos}`);
     if (params.minFollowers) queryParts.push(`followers:>=${params.minFollowers}`);
-    if (params.language) queryParts.push(`language:${params.language}`);
+    if (params.language) queryParts.push(`language:"${params.language}"`);
 
     const query = queryParts.join(' ');
-    
+
     if (!query.trim()) {
       throw new Error('Please provide at least one search criteria');
     }
 
-    // Make the API request
+    // Make the API request to search endpoint
     const response = await axios.get(`${BASE_URL}/search/users`, {
       params: {
         q: query,
@@ -45,6 +45,8 @@ export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
         'Accept': 'application/vnd.github.v3+json'
       }
     });
+
+
 
     // Get detailed information for each user
     const usersWithDetails = await Promise.all(
@@ -81,30 +83,6 @@ export const searchUsers = async (params = {}, page = 1, perPage = 10) => {
           throw new Error(`GitHub API error: ${error.response.data.message}`);
       }
     }
-    throw error;
-  }
-};
-
-/**
- * Get user repositories
- * @param {string} username - GitHub username
- * @param {Object} [params] - Additional parameters
- * @param {string} [params.sort] - Sort field (created, updated, pushed, full_name)
- * @param {string} [params.direction] - Sort direction (asc or desc)
- * @returns {Promise<Array>} List of repositories
- */
-export const getUserRepos = async (username, params = {}) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/users/${username}/repos`, {
-      params: {
-        sort: params.sort || 'updated',
-        direction: params.direction || 'desc',
-        per_page: params.perPage || 100
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Failed to fetch repositories for ${username}:`, error);
     throw error;
   }
 };
