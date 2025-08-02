@@ -1,5 +1,4 @@
 import React from 'react';
-import Search from './components/Search.jsx';
 
 function App() {
   return (
@@ -8,7 +7,7 @@ function App() {
         <h1 className="text-3xl font-bold text-center mb-6 text-indigo-400">
           GitHub User Search
         </h1>
-        <Search />
+      
       </div>
     </div>
   );
