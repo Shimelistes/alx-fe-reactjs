@@ -1,7 +1,7 @@
 // src/services/githubService.js
 import axios from 'axios';
 
-const BASE_URL = 'https://api.github.com';
+const BASE_URL = 'https://api.github.com/search/users?q';
 
 /**
  * Search GitHub users with advanced filters
