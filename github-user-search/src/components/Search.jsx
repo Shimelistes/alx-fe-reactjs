@@ -17,13 +17,14 @@ const Search = () => {
     setUser(null);
 
     try {
-      const userData = await githubService.fetchUserData(username);
-      setUser(userData);
-    // } catch (err) {
-      setError('Looks like we can’t find the user');
-    } finally {
-      setLoading(false);
-    }
+  const userData = await githubService.fetchUserData(username);
+  setUser(userData);
+} catch (err) {
+  setError('Looks like we cant find the user');
+  console.log(err);
+} finally {
+  setLoading(false);
+}
   };
 
   return (
@@ -43,9 +44,7 @@ const Search = () => {
       </form>
 
       {loading && <p>Loading...</p>}
-      
       {error && <p className="error">{error}</p>}
-
       {user && !loading && (
         <div className="user-card">
           <img src={user.avatar_url} alt={user.name || user.login} className="avatar" />
