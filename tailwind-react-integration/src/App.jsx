@@ -3,7 +3,6 @@
 // import viteLogo from '/vite.svg'
 import './App.css'
 import UserProfile from './components/userprofile'
-import './App.css'
 
 function App() {
   return (
