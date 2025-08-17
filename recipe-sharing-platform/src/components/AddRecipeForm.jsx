@@ -3,14 +3,14 @@ import React, { useState } from "react";
 const AddRecipeForm = ({ onAddRecipe }) => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [steps, setSteps] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // ✅ Simple validation
-    if (!title || !ingredients || !instructions) {
+    if (!title || !ingredients || !steps) {
       setError("All fields are required.");
       return;
     }
@@ -21,14 +21,20 @@ const AddRecipeForm = ({ onAddRecipe }) => {
       return;
     }
 
+    // ✅ Convert steps into array (split by new line)
+    const stepsList = steps
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     // ✅ Create new recipe object
     const newRecipe = {
       id: Date.now(),
       title,
-      summary: instructions.slice(0, 60) + "...", // short preview
-      image: "https://via.placeholder.com/300x200", // default placeholder
+      summary: stepsList[0] || "No summary provided",
+      image: "https://via.placeholder.com/300x200", // placeholder
       ingredients: ingredientsList,
-      instructions: instructions.split(".").map((step) => step.trim()).filter(Boolean)
+      instructions: stepsList, // 👈 now matches RecipeDetail
     };
 
     // Send recipe up to parent
@@ -37,7 +43,7 @@ const AddRecipeForm = ({ onAddRecipe }) => {
     // Clear form
     setTitle("");
     setIngredients("");
-    setInstructions("");
+    setSteps("");
     setError("");
   };
 
@@ -81,16 +87,16 @@ const AddRecipeForm = ({ onAddRecipe }) => {
           ></textarea>
         </div>
 
-        {/* Preparation Steps */}
+        {/* Steps */}
         <div>
           <label className="block text-gray-700 font-medium mb-1">
-            Preparation Steps
+            Preparation Steps (one per line)
           </label>
           <textarea
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
+            value={steps}
+            onChange={(e) => setSteps(e.target.value)}
             className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Write each step separated by a period."
+            placeholder={`e.g.\nMix ingredients\nBake for 30 minutes`}
             rows="5"
           ></textarea>
         </div>
