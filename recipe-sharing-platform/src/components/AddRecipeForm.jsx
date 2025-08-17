@@ -6,7 +6,6 @@ const AddRecipeForm = ({ onAddRecipe }) => {
   const [steps, setSteps] = useState("");
   const [errors, setErrors] = useState({});
 
-  // ✅ Validation function
   const validate = () => {
     const newErrors = {};
 
@@ -36,15 +35,14 @@ const AddRecipeForm = ({ onAddRecipe }) => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // ✅ return true if no errors
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validate()) return; // ✅ stop if errors exist
+    if (!validate()) return;
 
-    // Create recipe object
     const newRecipe = {
       id: Date.now(),
       title,
@@ -59,7 +57,6 @@ const AddRecipeForm = ({ onAddRecipe }) => {
 
     onAddRecipe(newRecipe);
 
-    // Reset form
     setTitle("");
     setIngredients("");
     setSteps("");
@@ -67,12 +64,14 @@ const AddRecipeForm = ({ onAddRecipe }) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-xl">
-      <h2 className="text-2xl font-bold mb-6 text-center">Add New Recipe</h2>
+    <div className="container mx-auto px-4 py-8 max-w-xl md:max-w-2xl">
+      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">
+        Add New Recipe
+      </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-2xl shadow-lg space-y-4"
+        className="bg-white p-6 md:p-8 rounded-2xl shadow-lg space-y-4"
       >
         {/* Recipe Title */}
         <div>
@@ -83,12 +82,16 @@ const AddRecipeForm = ({ onAddRecipe }) => {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 ${
-              errors.title ? "border-red-500 focus:ring-red-400" : "focus:ring-blue-400"
+            className={`w-full border rounded-lg px-3 py-2 md:py-3 focus:outline-none focus:ring-2 ${
+              errors.title
+                ? "border-red-500 focus:ring-red-400"
+                : "focus:ring-blue-400"
             }`}
             placeholder="Enter recipe title"
           />
-          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+          )}
         </div>
 
         {/* Ingredients */}
@@ -99,8 +102,10 @@ const AddRecipeForm = ({ onAddRecipe }) => {
           <textarea
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
-            className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 ${
-              errors.ingredients ? "border-red-500 focus:ring-red-400" : "focus:ring-blue-400"
+            className={`w-full border rounded-lg px-3 py-2 md:py-3 focus:outline-none focus:ring-2 ${
+              errors.ingredients
+                ? "border-red-500 focus:ring-red-400"
+                : "focus:ring-blue-400"
             }`}
             placeholder="e.g. flour, sugar, eggs"
             rows="3"
@@ -118,8 +123,10 @@ const AddRecipeForm = ({ onAddRecipe }) => {
           <textarea
             value={steps}
             onChange={(e) => setSteps(e.target.value)}
-            className={`w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 ${
-              errors.steps ? "border-red-500 focus:ring-red-400" : "focus:ring-blue-400"
+            className={`w-full border rounded-lg px-3 py-2 md:py-3 focus:outline-none focus:ring-2 ${
+              errors.steps
+                ? "border-red-500 focus:ring-red-400"
+                : "focus:ring-blue-400"
             }`}
             placeholder={`e.g.\nMix ingredients\nBake for 30 minutes`}
             rows="5"
@@ -132,7 +139,7 @@ const AddRecipeForm = ({ onAddRecipe }) => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors"
+          className="w-full bg-blue-500 text-white py-2 md:py-3 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors"
         >
           Add Recipe
         </button>
