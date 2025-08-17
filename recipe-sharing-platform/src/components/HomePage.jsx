@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // ✅ import Link
 import data from "../data.json"; // import mock data
 
 const HomePage = () => {
@@ -31,12 +32,14 @@ const HomePage = () => {
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-2">{recipe.title}</h2>
               <p className="text-gray-600 text-sm mb-4">{recipe.summary}</p>
-              <a
-                href={`/recipe/${recipe.id}`}
+
+              {/* ✅ Use Link instead of <a> */}
+              <Link
+                to={`/recipe/${recipe.id}`}
                 className="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
               >
                 View Recipe
-              </a>
+              </Link>
             </div>
           </div>
         ))}
