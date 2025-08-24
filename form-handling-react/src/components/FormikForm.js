@@ -1,102 +1,124 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import mockRegisterApi from '../api/mockRegisterApi';
 
 const FormikForm = () => {
-  const [message, setMessage] = useState('');
-  const [isSubmittingFormik, setIsSubmittingFormik] = useState(false);
+  const initialValues = {
+    username: '',
+    email: '',
+    password: '',
+  };
 
+  // Validation Schema with Yup
   const validationSchema = Yup.object({
     username: Yup.string().required('Username is required'),
-    email: Yup.string().email('Invalid email format').required('Email is required'),
-    password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    email: Yup.string()
+      .email('Invalid email format')
+      .required('Email is required'),
+    password: Yup.string()
+      .min(6, 'Password must be at least 6 characters')
+      .required('Password is required'),
   });
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    setMessage('');
-    setIsSubmittingFormik(true);
-
+  const handleSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
     try {
-      const response = await mockRegisterApi(values);
-      setMessage(response.message);
-      if (response.success) resetForm();
-    } catch {
-      setMessage('Registration failed. Please try again.');
+      const response = await fetch('https://jsonplaceholder.typicode.com/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: values.username,
+          email: values.email,
+          password: values.password, // Again, this is mock
+        }),
+      });
+
+      if (response.ok) {
+        alert('Registration successful!');
+        resetForm();
+      } else {
+        throw new Error('Registration failed');
+      }
+    } catch (err) {
+      setErrors({ submit: 'An error occurred during registration.' });
     } finally {
       setSubmitting(false);
-      setIsSubmittingFormik(false);
     }
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full my-4 border border-green-200">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Formik Registration Form</h2>
+    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
+      <h2>User Registration (Formik)</h2>
       <Formik
-        initialValues={{ username: '', email: '', password: '' }}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {() => (
-          <Form className="space-y-4">
-            <div>
-              <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="formikUsername">
-                Username:
-              </label>
+        {({ isSubmitting, errors }) => (
+          <Form>
+            {/* Username */}
+            <div style={{ marginBottom: '15px' }}>
+              <label>Username:</label>
               <Field
                 type="text"
-                id="formikUsername"
                 name="username"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md 
-                focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your username"
-                disabled={isSubmittingFormik}
+                style={{ width: '100%', padding: '8px', marginTop: '5px' }}
               />
-              <ErrorMessage name="username" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="username"
+                component="div"
+                style={{ color: 'red' }}
+              />
             </div>
-            <div>
-              <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="formikEmail">
-                Email:
-              </label>
+
+            {/* Email */}
+            <div style={{ marginBottom: '15px' }}>
+              <label>Email:</label>
               <Field
                 type="email"
-                id="formikEmail"
                 name="email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md 
-                focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your email"
-                disabled={isSubmittingFormik}
+                style={{ width: '100%', padding: '8px', marginTop: '5px' }}
               />
-              <ErrorMessage name="email" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage name="email" component="div" style={{ color: 'red' }} />
             </div>
-            <div>
-              <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="formikPassword">
-                Password:
-              </label>
+
+            {/* Password */}
+            <div style={{ marginBottom: '15px' }}>
+              <label>Password:</label>
               <Field
                 type="password"
-                id="formikPassword"
                 name="password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md 
-                focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
-                disabled={isSubmittingFormik}
+                style={{ width: '100%', padding: '8px', marginTop: '5px' }}
               />
-              <ErrorMessage name="password" component="div" className="text-red-600 text-sm mt-1" />
+              <ErrorMessage
+                name="password"
+                component="div"
+                style={{ color: 'red' }}
+              />
             </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 
-              focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 
-              transition duration-200 ease-in-out"
-              disabled={isSubmittingFormik}
+              disabled={isSubmitting}
+              style={{
+                backgroundColor: '#28a745',
+                color: 'white',
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
             >
-              {isSubmittingFormik ? 'Submitting...' : 'Register with Formik'}
+              {isSubmitting ? 'Registering...' : 'Register'}
             </button>
-            {message && (
-              <p className={`text-center text-sm ${message.includes('successful') ? 'text-green-600' : 'text-red-600'} mt-4`}>
-                {message}
-              </p>
+
+            {errors.submit && (
+              <div style={{ color: 'red', marginTop: '10px' }}>{errors.submit}</div>
             )}
           </Form>
         )}
