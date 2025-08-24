@@ -37,7 +37,7 @@ export default function RegistrationForm() {
 
       const data = await res.json();
       alert(`User registered: ${data.username}`);
-    } catch (err) {
+    } catch  {
       setError("Something went wrong!");
     }
   };
