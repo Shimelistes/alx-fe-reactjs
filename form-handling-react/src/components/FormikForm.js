@@ -37,7 +37,7 @@ const FormikForm = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form className="space-y-4">
             <div>
               <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="formikUsername">
