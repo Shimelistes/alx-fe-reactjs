@@ -1,75 +1,58 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-function RegistrationForm() {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: ""
-  });
-
+const RegistrationForm = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!formData.username || !formData.email || !formData.password) {
+    // Basic validation
+    if (!username || !email || !password) {
       setError("All fields are required!");
       return;
     }
 
     setError("");
-    console.log("User registered:", formData);
-
-    // Example mock API simulation
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: { "Content-type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => console.log("API response:", data));
+    console.log("Form submitted:", { username, email, password });
+    // You can replace console.log with API call
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded">
-      <h2 className="text-xl font-bold">Controlled Registration Form</h2>
+    <form onSubmit={handleSubmit} className="p-4 border rounded w-80 mx-auto mt-6">
+      <h2 className="text-xl font-bold mb-4">User Registration</h2>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 mb-2">{error}</p>}
 
-      <div>
-        <label className="block">Username:</label>
+      <div className="mb-3">
+        <label className="block mb-1">Username</label>
         <input
           type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          className="border p-2 w-full"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="border px-2 py-1 w-full"
         />
       </div>
 
-      <div>
-        <label className="block">Email:</label>
+      <div className="mb-3">
+        <label className="block mb-1">Email</label>
         <input
           type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="border p-2 w-full"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border px-2 py-1 w-full"
         />
       </div>
 
-      <div>
-        <label className="block">Password:</label>
+      <div className="mb-3">
+        <label className="block mb-1">Password</label>
         <input
           type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          className="border p-2 w-full"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border px-2 py-1 w-full"
         />
       </div>
 
@@ -78,6 +61,6 @@ function RegistrationForm() {
       </button>
     </form>
   );
-}
+};
 
 export default RegistrationForm;
