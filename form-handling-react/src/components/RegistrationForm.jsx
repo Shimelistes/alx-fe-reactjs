@@ -1,95 +1,81 @@
-import { useState } from "react";
+import React, { useState } from 'react';
+import './RegistrationForm.css'; // Optional: for styling
 
 const RegistrationForm = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  // New state to manage specific errors for each field
+  const [errors, setErrors] = useState({});
 
-  const [error, setError] = useState("");
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevents the default form submission behavior
+    
+    // Create a temporary object to hold validation errors
+    const newErrors = {};
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Basic validation
-    if (!formData.username || !formData.email || !formData.password) {
-      setError("All fields are required.");
-      return;
+    // Explicit validation logic for each field
+    if (!username) {
+      newErrors.username = 'Username is required.';
+    }
+    if (!email) {
+      newErrors.email = 'Email is required.';
+    }
+    if (!password) {
+      newErrors.password = 'Password is required.';
     }
 
-    setError("");
+    // Update the state with the new errors object
+    setErrors(newErrors);
 
-    try {
-      // Mock API call
-      const response = await fetch("https://jsonplaceholder.typicode.com/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("User registered:", data);
-        alert("Registration successful!");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      setError("Something went wrong. Please try again.");
+    // If there are no errors, proceed with form submission
+    if (Object.keys(newErrors).length === 0) {
+      console.log('Form submitted successfully!', { username, email, password });
+      
+      // Optional: Reset form fields after submission
+      setUsername('');
+      setEmail('');
+      setPassword('');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded max-w-md mx-auto space-y-4">
-      <h2 className="text-xl font-bold">Controlled Registration Form</h2>
-
-      {error && <p className="text-red-500">{error}</p>}
-
-      <div>
-        <label className="block">Username</label>
-        <input
-          type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-      </div>
-
-      <div>
-        <label className="block">Email</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-      </div>
-
-      <div>
-        <label className="block">Password</label>
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-      </div>
-
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-        Register
-      </button>
-    </form>
+    <div className="registration-form-container">
+      <form onSubmit={handleSubmit} className="registration-form">
+        <h2>Register</h2>
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          {errors.username && <p className="error-message">{errors.username}</p>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {errors.email && <p className="error-message">{errors.email}</p>}
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {errors.password && <p className="error-message">{errors.password}</p>}
+        </div>
+        <button type="submit">Register</button>
+      </form>
+    </div>
   );
 };
 
