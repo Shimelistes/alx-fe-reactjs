@@ -1,17 +1,26 @@
-import React from 'react';
-import RegistrationForm from './components/RegistrationForm';
-import FormikForm from "./components/formikForm";
+import React, { useState } from 'react';
+import ControlledForm from './components/ControlledForm';
+import FormikForm from './components/formikForm';
 
-export default function App() {
+const App = () => {
+  const [showControlled, setShowControlled] = useState(true);
+
+  const toggleForm = () => {
+    setShowControlled(!showControlled);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 font-sans">
-      {/* Render the controlled registration form */}
-      <RegistrationForm />
-
-      <div className="my-8 text-gray-600 text-lg font-medium">--- OR ---</div>
-
-      {/* Render the Formik registration form */}
-      <FormikRegistrationForm />
+    <div className="app-container">
+      <h1 className="text-center text-3xl font-bold my-6">User Registration</h1>
+      <button 
+        onClick={toggleForm} 
+        className="mb-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+      >
+        Switch to {showControlled ? 'Formik' : 'Controlled'} Form
+      </button>
+      {showControlled ? <ControlledForm /> : <FormikForm />}
     </div>
   );
-}
+};
+
+export default App;
